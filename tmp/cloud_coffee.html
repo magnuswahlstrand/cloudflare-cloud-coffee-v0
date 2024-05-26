@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/htmx.js"
+            integrity="sha384-qbtR4rS9RrUMECUWDWM2+YGgN3U4V4ZncZ0BvUcg9FGct0jqXz3PUdVpU1p0yrXS"
+            crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/ws.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/debug.js"></script>
+    <!--    Remove after development -->
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/json-enc.js"></script>
+
+    <title>Cloud Coffee</title>
+    <style>
+
+
+        .logo, .qr-code, .preparing {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .qr-code img {
+            max-width: 100%;
+        }
+
+        .status {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .status.preparing {
+            color: #FF5722;
+        }
+
+        .status.completed {
+            color: #4CAF50;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: green;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+        }
+
+        .logo {
+            font-size: 5rem;
+            font-weight: bold;
+            line-height: 0.9;
+        }
+
+        .logo .highlight {
+            background: linear-gradient(90deg, #C51162, #FF5722);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+
+        .item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .qr-code, .completed, .preparing {
+            flex: 1;
+        }
+
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: stretch;
+            /*justify-items: stretch;*/
+            background: yellow;
+            width: 100%;
+            height: 100%;
+        }
+
+        .container-1, .container-2 {
+            display: flex;
+            gap: 20px;
+            justify-items: center;
+            flex-direction: column;
+        }
+
+        .container-1 {
+            background-color: white;
+        }
+
+        .container-2 {
+            background-color: white;
+        }
+
+        /* "Tablet" layout */
+        @media (min-width: 768px) {
+            body {
+                background-color: red;
+            }
+
+            .container {
+                flex-direction: row;
+            }
+
+            .container-2 {
+                flex: 1;
+            }
+
+            .completed {
+                order: 2;
+            }
+
+            .preparing {
+                order: 1
+            }
+        }
+
+        .logo span {
+            margin-right: 10px;
+            display: block;
+        }
+
+        /* "Desktop" layout */
+        @media (min-width: 1024px) {
+            .container-2 {
+                flex: 1;
+                flex-direction: row;
+            }
+        }
+
+        .flex-item-fixed {
+            flex: 0 1 auto;
+        }
+
+        .flex-item-fill {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        }
+
+        li {
+            margin: 0;
+        }
+
+        .queue {
+            width: 100%;
+        }
+
+        progress {
+            width: 100%;
+            height: 30px;
+            appearance: none;
+            padding: 0 10px 0 10px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        progress::-webkit-progress-bar {
+            background-color: #f3f3f3;
+            padding: 3px;
+            border: 1px solid #ddd;
+        }
+
+        progress::-webkit-progress-value {
+            background: linear-gradient(to right, #D32F2F, #FF7043);
+        }
+
+        progress::-moz-progress-bar {
+            background: linear-gradient(to right, #D32F2F, #FF7043);
+        }
+
+        #progress-bar {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+
+        .order {
+            display: flex;
+            padding: 10px;
+            flex-direction: column;
+            border-bottom: 1px solid #ddd;
+            min-height: 4rem;
+        }
+
+        .order > .buttons {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        * {
+            /*outline: 1px solid red;*/
+        }
+
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem; /* Adjust padding as needed */
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            color: #fff; /* White text */
+            background-color: #3490dc; /* Tailwind's blue-500 */
+            border: none;
+            border-radius: 0.25rem; /* Rounded corners */
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #2779bd; /* Tailwind's blue-600 */
+        }
+
+        button:active {
+            background-color: #1c3d5a; /* Tailwind's blue-700 */
+        }
+
+    </style>
+</head>
+<body>
+<div class="container" hx-ext="ws" ws-connect="ws://localhost:8787/shop/abc/ws?type=dashboard">
+    <div class="container-1">
+        <div class="item logo">
+            <div class="highlight">Cloud</div>
+            <div>Coffee</div>
+        </div>
+        <div class="item qr-code">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg" alt="QR Code">
+            <div id="progress-bar">
+                <progress value="32" max="100"> 32%</progress>
+                <span>9 drink(s) remaining</span>
+            </div>
+        </div>
+        <div class="item queue">
+            <button
+                    hx-post="http://localhost:8787/shop/abc/order"
+                    hx-headers='{"Content-Type": "application/json"}'
+                    hx-trigger="click"
+                    hx-ext="json-enc"
+                    hx-vals='{"name": "Magnus"}'
+                    hx-swap="none"
+            >
+                Order Now
+            </button>
+
+        </div>
+    </div>
+    <div class="container-2">
+        <div class="item status preparing">
+            <h2 class="flex-item-fixed">Preparing</h2>
+            <ul class="flex-item-fill" id="pending" hx-trigger="load"
+                hx-get="http://localhost:8787/shop/abc/orders/pending"
+                hx-swap="outerHTML"
+            >
+
+            </ul>
+        </div>
+        <div class="item status completed">
+            <h2 class="flex-item-fixed">Ready</h2>
+            <ul class="flex-item-fill" id="completed"></ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

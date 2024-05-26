@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "dev": "wrangler dev src/index.ts --port 8787",
+    "deploy": "wrangler deploy --minify src/index.ts",
+    "cf-typegen": "wrangler types",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "hono": "^4.3.8"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.2.11",
+    "@cloudflare/workers-types": "^4.20240512.0",
+    "install": "^0.13.0",
+    "vitest": "1.5.0",
+    "wrangler": "^3.47.0"
+  }
+}

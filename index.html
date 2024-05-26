@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: white;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FFBF00; /* McDonald's Golden Arches color */
+            margin-bottom: 1rem;
+        }
+
+        .main-text {
+            font-size: 3rem;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .main-text .highlight {
+            background: linear-gradient(90deg, #C51162, #FF5722);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .sub-text {
+            font-size: 2rem;
+            margin-top: 2rem;
+        }
+
+        .sub-text .app-name {
+            background: linear-gradient(90deg, #C51162, #FF5722);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .phone {
+            margin-top: 2rem;
+            width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body  hx-ext="debug">
+<div class="container">
+    <div class="main-text">
+        <span class="highlight">Cloud</span> coffee
+        <hr />
+    </div>
+</div>
+</body>
+</html>

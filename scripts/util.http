@@ -1,0 +1,23 @@
+# Post request
+### Send POST request with json body
+POST http://localhost:8787/shop/abc/order
+Content-Type: application/json
+
+{
+  "name": "Martin"
+}
+
+### Create a shop
+POST http://localhost:8787/shop/abc
+Content-Type: application/json
+
+{}
+
+
+### Send POST request with json body
+POST http://localhost:8787/shop/abc/order/274/complete
+Content-Type: application/json
+
+{
+  "name": "Magnus"
+}
